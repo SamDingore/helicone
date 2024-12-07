@@ -1,5 +1,5 @@
 type JsonValue = string | number | boolean | null | JsonArray | JsonObject;
-interface JsonArray extends Array<JsonValue> {}
+interface JsonArray extends Array<JsonValue> { }
 interface JsonObject { [key: string]: JsonValue; }
 
 /**
@@ -491,6 +491,9 @@ export interface paths {
   };
   "/v1/settings/query": {
     get: operations["GetSettings"];
+  };
+  "/v1/deletedproperty/create": {
+    post: operations["CreateDeletedProperty"];
   };
 }
 
@@ -5961,4 +5964,21 @@ export interface operations {
       };
     };
   };
+  CreateDeletedProperty: {
+    requestBody: {
+      content: {
+        "application/json": {
+          key: string;
+        };
+      };
+    };
+    responses: {
+      /** @description Ok */
+      200: {
+        content: {
+          "application/json": components["schemas"]["Result_string.string_"];
+        };
+      };
+    };
+  },
 }

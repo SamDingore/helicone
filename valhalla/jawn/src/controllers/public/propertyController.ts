@@ -5,6 +5,7 @@ import { buildFilterWithAuthClickHouse } from "../../lib/shared/filters/filters"
 import { KVCache } from "../../lib/cache/kvCache";
 import { JawnAuthenticatedRequest } from "../../types/request";
 import { cacheResultCustom } from "../../utils/cacheResult";
+import { DeletePropertyManager } from "../../managers/delete_property/DeletePropertyManager";
 
 export interface Property {
   property: string;
@@ -36,10 +37,24 @@ export class PropertyController extends Controller {
     )
   `;
 
-    return await cacheResultCustom(
+    const result = await cacheResultCustom(
       "v1/property/query" + request.authParams.organizationId,
       async () => await dbQueryClickhouse<Property>(query, builtFilter.argsAcc),
       kvCache
     );
+
+    if (result.error) {
+      return result;
+    }
+
+    const manager = new DeletePropertyManager(request.authParams);
+    const deletedproperties = await manager.fetchDeletedProperties();
+
+    const filteredResult = result.data?.filter(
+      (item) =>
+        !deletedproperties.data?.some((obj) => obj.key === item.property)
+    );
+
+    return filteredResult;
   }
 }
