@@ -25,16 +25,19 @@ import LoadingAnimation from "../../shared/loadingAnimation";
 import ExportButton from "../../shared/themed/table/exportButton";
 import { UIFilterRow } from "../../shared/themed/themedAdvancedFilters";
 import ThemedTableHeader from "../../shared/themed/themedHeader";
+import ThemedDeleteButton from "@/components/shared/themed/themedDeleteButton";
 import useSearchParams from "../../shared/utils/useSearchParams";
 import { formatNumber } from "../users/initialColumns";
 import { SimpleTable } from "../../shared/table/simpleTable";
 
 interface PropertyPanelProps {
   property: string;
+  deletePropertyHandler: (property: string) => void;
+  isDeleting: boolean;
 }
 
 const PropertyPanel = (props: PropertyPanelProps) => {
-  const { property } = props;
+  const { property, deletePropertyHandler, isDeleting } = props;
   const searchParams = useSearchParams();
 
   const [showMore, setShowMore] = useState(false);
@@ -79,9 +82,8 @@ const PropertyPanel = (props: PropertyPanelProps) => {
   );
 
   function encodeFilter(filter: UIFilterRow): string {
-    return `${filterMap[filter.filterMapIdx].label}:${
-      filterMap[filter.filterMapIdx].operators[filter.operatorIdx].label
-    }:${filter.value}`;
+    return `${filterMap[filter.filterMapIdx].label}:${filterMap[filter.filterMapIdx].operators[filter.operatorIdx].label
+      }:${filter.value}`;
   }
 
   const propertyValueData =
@@ -140,6 +142,10 @@ const PropertyPanel = (props: PropertyPanelProps) => {
             "Avg Latency": propertyValue.avg_latency_per_request,
             "Avg Cost": propertyValue.average_cost_per_request,
           }))}
+        />
+        <ThemedDeleteButton
+          onDelete={() => deletePropertyHandler(property)}
+          isDeleting={isDeleting}
         />
       </div>
       {property === "" ? (

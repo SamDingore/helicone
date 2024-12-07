@@ -2101,6 +2101,37 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      },
+      deleted_properties: {
+        Row: {
+          id: string;
+          created_at: string;
+          request_id: string;
+          key: string;
+          value: string;
+          organization_id: string;
+        }
+        Insert: {
+          id?: string
+          created_at?: string | null
+          key: string
+          organization_id: string;
+        }
+        Update: {
+          id?: string
+          created_at?: string | null
+          key?: string | null
+          organization_id?: string | null
+        },
+        Relationships: [
+          {
+            foreignKeyName: "deleted_properties_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organization"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {

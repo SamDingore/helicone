@@ -492,6 +492,9 @@ export interface paths {
   "/v1/stripe/webhook": {
     post: operations["HandleStripeWebhook"];
   };
+  "/v1/deletedproperty/create": {
+    post: operations["CreateDeletedProperty"];
+  };
 }
 
 export type webhooks = Record<string, never>;
@@ -5961,4 +5964,21 @@ export interface operations {
       };
     };
   };
+  CreateDeletedProperty: {
+    requestBody: {
+      content: {
+        "application/json": {
+          key: string;
+        };
+      };
+    };
+    responses: {
+      /** @description Ok */
+      200: {
+        content: {
+          "application/json": components["schemas"]["Result_string.string_"];
+        };
+      };
+    };
+  },
 }

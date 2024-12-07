@@ -10,12 +10,23 @@ import LoadingAnimation from "../../shared/loadingAnimation";
 import PropertyPanel from "./propertyPanel";
 import { getPropertyFiltersV2 } from "../../../services/lib/filters/frontendFilterDefs";
 import { IslandContainer } from "@/components/ui/islandContainer";
+import { useDeleteProperty } from "@/services/hooks/useDeleteProperty";
 
 const PropertiesPage = (props: {}) => {
-  const { properties, isLoading: isPropertiesLoading } =
+  const { properties, isLoading: isPropertiesLoading, refetch } =
     useGetPropertiesV2(getPropertyFiltersV2);
 
   const [selectedProperty, setSelectedProperty] = useState<string>("");
+  const { deletePropertyHandler, isDeleting } = useDeleteProperty();
+
+  const _deletePropertyHandler = async (property: string) => {
+    if (isDeleting) return;
+
+    await deletePropertyHandler(property);
+    refetch();
+    setSelectedProperty("");
+  }
+
 
   return (
     <IslandContainer>
@@ -81,7 +92,7 @@ const PropertiesPage = (props: {}) => {
               </div>
 
               <div className="w-full xl:pl-4 flex flex-col space-y-4">
-                <PropertyPanel property={selectedProperty} />
+                <PropertyPanel property={selectedProperty} deletePropertyHandler={_deletePropertyHandler} isDeleting={isDeleting} />
               </div>
             </div>
           )}
